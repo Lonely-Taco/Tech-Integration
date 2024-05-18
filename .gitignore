@@ -154,7 +154,7 @@ publish/
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
-# TODO: Comment the next line if you want to checkin your web deploy settings
+
 # but database connection strings (with potential passwords) will be unencrypted
 *.pubxml
 *.publishproj
@@ -423,4 +423,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+appsettings.Development.json
+appsettings.Development.json
 appsettings.Development.json
