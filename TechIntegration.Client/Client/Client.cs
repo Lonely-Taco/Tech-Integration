@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 public class Client : IClient
 {
     private readonly string _apiKey;
-    private readonly string _apiSecret;
     private readonly string _apiToken;
     private readonly IConfiguration _configuration;
 
@@ -16,7 +15,6 @@ public class Client : IClient
     {
         _configuration = configuration;
         _apiKey = _configuration["TRELLO_API_KEY"]!;
-        _apiSecret = _configuration["TRELLO_API_SECRET"]!;
         _apiToken = _configuration["TRELLO_API_TOKEN"]!;
     }
 
@@ -36,12 +34,7 @@ public class Client : IClient
         {
             string jsonResponse = await response.Content.ReadAsStringAsync();
             return jsonResponse;
-            Console.WriteLine("Trello Boards: ");
-            Console.WriteLine(jsonResponse);
-        }
-        else
-        {
-            Console.WriteLine($"Failed to retrieve boards: {response.StatusCode}, {response.ReasonPhrase}");
+
         }
         
         return string.Empty;
@@ -49,8 +42,6 @@ public class Client : IClient
 
     public string GetAuthorizationUrl()
     {
-        Console.WriteLine(_apiKey);
-        Console.WriteLine($"wutang: {_apiKey}");
         return
             $"https://trello.com/1/authorize?expiration=1day&name=MyPersonalToken&scope=read&response_type=token&key={_apiKey}";
     }
@@ -60,8 +51,8 @@ public class Client : IClient
         using HttpClient client = new HttpClient();
 
         string baseUrl = "https://api.trello.com/1";
-
-        string endpoint = "/boards//lists";
+        
+        string endpoint = $"/boards/{_configuration["TRELLO_API_BOARDID"]}/lists";
         string url = $"{baseUrl}{endpoint}?key={_apiKey}&token={_apiToken}";
 
         HttpResponseMessage response = client.GetAsync(url).Result;

@@ -15,4 +15,8 @@
       <PackageReference Include="CsvHelper" Version="32.0.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\TechIntegration.Infra\TechIntegration.Infra.csproj" />
+    </ItemGroup>
+
 </Project>
