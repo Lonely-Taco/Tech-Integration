@@ -11,8 +11,8 @@ public class Tender
     public DateTime? ExpirationDate { get; set; }
     public bool HasDocuments { get; set; }
     public string Location { get; set; }
-    public DateTime PublicationDate { get; set; }
+    public string PublicationDate { get; set; }
     public int Status { get; set; }
     public string Currency { get; set; }
-    public decimal Value { get; set; }
+    public string? Value { get; set; }
 }

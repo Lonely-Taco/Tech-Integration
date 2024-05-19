@@ -1,3 +1,6 @@
+using System.Text.Json.Nodes;
+using Newtonsoft.Json;
+
 namespace TechIntegration.Client.Client;
 
 using System;
@@ -10,52 +13,45 @@ public class Client : IClient
     private readonly string _apiKey;
     private readonly string _apiToken;
     private readonly IConfiguration _configuration;
+    private readonly HttpClient _httpClient;
 
-    public Client(IConfiguration configuration)
+    private const string _baseUrl = "https://api.trello.com/1/";
+
+    public Client(IConfiguration configuration, HttpClient client)
     {
         _configuration = configuration;
+        _httpClient = client;
         _apiKey = _configuration["TRELLO_API_KEY"]!;
         _apiToken = _configuration["TRELLO_API_TOKEN"]!;
     }
 
     public async Task<string> GetTrelloBoards()
     {
-        using HttpClient client = new HttpClient();
-
-        string baseUrl = "https://api.trello.com/1";
-
-        string endpoint = "/members/me/boards";
-        string url = $"{baseUrl}{endpoint}?key={_apiKey}&token={_apiToken}";
-
-
-        HttpResponseMessage response = await client.GetAsync(url);
+        string endpoint = "members/me/boards";
+        string url = $"{_baseUrl}{endpoint}?key={_apiKey}&token={_apiToken}";
+        HttpResponseMessage response = await _httpClient.GetAsync(url);
 
         if (response.IsSuccessStatusCode)
         {
             string jsonResponse = await response.Content.ReadAsStringAsync();
             return jsonResponse;
-
         }
-        
+
         return string.Empty;
     }
 
     public string GetAuthorizationUrl()
     {
         return
-            $"https://trello.com/1/authorize?expiration=1day&name=MyPersonalToken&scope=read&response_type=token&key={_apiKey}";
+            $"https://trello.com/1/authorize?expiration=30days&name=MyPersonalToken&scope=read,write&response_type=token&key={_apiKey}";
     }
 
     public async Task<string> GetTrelloLists()
-    { 
-        using HttpClient client = new HttpClient();
+    {
+        string endpoint = $"boards/{_configuration["TRELLO_API_BOARDID"]}/lists";
+        string url = $"{_baseUrl}{endpoint}?key={_apiKey}&token={_apiToken}";
 
-        string baseUrl = "https://api.trello.com/1";
-        
-        string endpoint = $"/boards/{_configuration["TRELLO_API_BOARDID"]}/lists";
-        string url = $"{baseUrl}{endpoint}?key={_apiKey}&token={_apiToken}";
-
-        HttpResponseMessage response = client.GetAsync(url).Result;
+        HttpResponseMessage response = _httpClient.GetAsync(url).Result;
 
         if (response.IsSuccessStatusCode)
         {
@@ -69,11 +65,45 @@ public class Client : IClient
 
         return string.Empty;
     }
-}
+    
+    public async Task<T> GetAsync<T>(string url)
+    {
+        Console.WriteLine($"{_baseUrl}{url}?key={_apiKey}&token={_apiToken}");
+        HttpRequestMessage request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri($"{_baseUrl}{url}?key={_apiKey}&token={_apiToken}"),
+            VersionPolicy = HttpVersionPolicy.RequestVersionOrLower
+        };
 
-public interface IClient
-{
-    public Task<string> GetTrelloBoards();
-    public string GetAuthorizationUrl();
-    public Task<string>  GetTrelloLists();
+        HttpResponseMessage res = await _httpClient.SendAsync(request);
+
+        if (!res.IsSuccessStatusCode)
+        {
+            throw new Exception(res.Content.ReadAsStringAsync().Result);
+        }
+
+        return JsonConvert.DeserializeObject<T>(res.Content.ReadAsStringAsync().Result)!;
+    }
+
+    public async Task<T> PostAsync<T>(string url, HttpMethod method, HttpContent? content = null)
+    {
+        HttpRequestMessage request = new HttpRequestMessage
+        {
+            Content = content,
+            Method = method,
+            RequestUri = new Uri($"{_baseUrl}{url}&key={_apiKey}&token={_apiToken}"),
+
+            VersionPolicy = HttpVersionPolicy.RequestVersionOrLower
+        };
+
+        HttpResponseMessage res = await _httpClient.SendAsync(request);
+
+        if (!res.IsSuccessStatusCode)
+        {
+            throw new Exception(res.Content.ReadAsStringAsync().Result);
+        }
+
+        return JsonConvert.DeserializeObject<T>(res.Content.ReadAsStringAsync().Result)!;
+    }
 }
