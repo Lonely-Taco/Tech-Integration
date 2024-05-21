@@ -32,6 +32,21 @@ updates custom fields on these cards based on the tender data.
 3. **Trello API Token**:
     - Once the access has been approved copy the token and paste it in the `appsettings.Development.json`
 
+4. **Trello Board configuration**
+    - Create 3 Lists/Lanes
+    - Add Custom fields to a card
+        * Id
+        * TenderId
+        * LotNumber
+        * Deadline
+        * ExpirationDate
+        * HasDocuments
+        * Location
+        * PublicationDate
+        * Status
+        * Currency
+        * Value
+    
 ### Step 3: Configure `appsettings.Development.json`
 
 Create or update the `appsettings.Development.json` file in the root of your project with the following content:
