@@ -20,23 +20,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="TechIntegration.Core\obj\project.assets.json" />
-      <_ContentIncludedByDefault Remove="TechIntegration.Core\obj\project.packagespec.json" />
-      <_ContentIncludedByDefault Remove="TechIntegration.Core\obj\TechIntegration.Core.csproj.nuget.dgspec.json" />
-      <_ContentIncludedByDefault Remove="TechIntegration.Infra\obj\project.assets.json" />
-      <_ContentIncludedByDefault Remove="TechIntegration.Infra\obj\project.packagespec.json" />
-      <_ContentIncludedByDefault Remove="TechIntegration.Infra\obj\TechIntegration.Infra.csproj.nuget.dgspec.json" />
-      <_ContentIncludedByDefault Remove="TechIntegration.Core\obj\Debug\net8.0\TechIntegration.Core.sourcelink.json" />
-      <_ContentIncludedByDefault Remove="TechIntegration.Client\obj\Debug\net8.0\TechIntegration.Client.sourcelink.json" />
-      <_ContentIncludedByDefault Remove="TechIntegration.Client\obj\project.assets.json" />
-      <_ContentIncludedByDefault Remove="TechIntegration.Client\obj\project.packagespec.json" />
-      <_ContentIncludedByDefault Remove="TechIntegration.Client\obj\TechIntegration.Client.csproj.nuget.dgspec.json" />
-      <_ContentIncludedByDefault Remove="TechIntegration.Core\bin\Debug\net8.0\TechIntegration.Core.deps.json" />
+      <_ContentIncludedByDefault Remove="TechIntegration.Logger\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="TechIntegration.Logger\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="TechIntegration.Logger\obj\TechIntegration.Logger.csproj.nuget.dgspec.json" />
     </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="TechIntegration.Client\TechIntegration.Client.csproj" />
-      <ProjectReference Include="TechIntegration.Core\TechIntegration.Core.csproj" />
-    </ItemGroup>
-
+    
 </Project>

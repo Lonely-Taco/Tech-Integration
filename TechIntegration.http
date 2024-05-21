@@ -1,5 +1,0 @@
-
-GET {{TechIntegration_HostAddress}}/Trello/auth
-Accept: application/json
-
-###

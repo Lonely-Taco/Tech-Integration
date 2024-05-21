@@ -1,6 +1,7 @@
-using TechIntegration;
 using TechIntegration.Client.Client;
 using TechIntegration.Core.Parser;
+using TechIntegration.Core.Services;
+using TechIntegration.Infra.Interfaces;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +11,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IClient, Client>();
 builder.Services.AddScoped<ICsvParse, Parser>();
+builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddControllers();
-
 
 var app = builder.Build();
 

@@ -1,12 +1,12 @@
-using System.Text.Json.Nodes;
-using Newtonsoft.Json;
-
-namespace TechIntegration.Client.Client;
-
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
+using TechIntegration.Infra.Interfaces;
+
+namespace TechIntegration.Client.Client;
 
 public class Client : IClient
 {
@@ -15,7 +15,7 @@ public class Client : IClient
     private readonly IConfiguration _configuration;
     private readonly HttpClient _httpClient;
 
-    private const string _baseUrl = "https://api.trello.com/1/";
+    private const string BaseUrl = "https://api.trello.com/1/";
 
     public Client(IConfiguration configuration, HttpClient client)
     {
@@ -28,7 +28,7 @@ public class Client : IClient
     public async Task<string> GetTrelloBoards()
     {
         string endpoint = "members/me/boards";
-        string url = $"{_baseUrl}{endpoint}?key={_apiKey}&token={_apiToken}";
+        string url = $"{BaseUrl}{endpoint}?key={_apiKey}&token={_apiToken}";
         HttpResponseMessage response = await _httpClient.GetAsync(url);
 
         if (response.IsSuccessStatusCode)
@@ -49,7 +49,7 @@ public class Client : IClient
     public async Task<string> GetTrelloLists()
     {
         string endpoint = $"boards/{_configuration["TRELLO_API_BOARDID"]}/lists";
-        string url = $"{_baseUrl}{endpoint}?key={_apiKey}&token={_apiToken}";
+        string url = $"{BaseUrl}{endpoint}?key={_apiKey}&token={_apiToken}";
 
         HttpResponseMessage response = _httpClient.GetAsync(url).Result;
 
@@ -58,21 +58,16 @@ public class Client : IClient
             string jsonResponse = await response.Content.ReadAsStringAsync();
             return jsonResponse;
         }
-        else
-        {
-            Console.WriteLine($"Failed to retrieve lists: {response.StatusCode}, {response.ReasonPhrase}");
-        }
 
         return string.Empty;
     }
-    
+
     public async Task<T> GetAsync<T>(string url)
     {
-        Console.WriteLine($"{_baseUrl}{url}?key={_apiKey}&token={_apiToken}");
         HttpRequestMessage request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri($"{_baseUrl}{url}?key={_apiKey}&token={_apiToken}"),
+            RequestUri = new Uri($"{BaseUrl}{url}key={_apiKey}&token={_apiToken}"),
             VersionPolicy = HttpVersionPolicy.RequestVersionOrLower
         };
 
@@ -82,7 +77,7 @@ public class Client : IClient
         {
             throw new Exception(res.Content.ReadAsStringAsync().Result);
         }
-
+        
         return JsonConvert.DeserializeObject<T>(res.Content.ReadAsStringAsync().Result)!;
     }
 
@@ -92,7 +87,7 @@ public class Client : IClient
         {
             Content = content,
             Method = method,
-            RequestUri = new Uri($"{_baseUrl}{url}&key={_apiKey}&token={_apiToken}"),
+            RequestUri = new Uri($"{BaseUrl}{url}&key={_apiKey}&token={_apiToken}"),
 
             VersionPolicy = HttpVersionPolicy.RequestVersionOrLower
         };
@@ -105,5 +100,43 @@ public class Client : IClient
         }
 
         return JsonConvert.DeserializeObject<T>(res.Content.ReadAsStringAsync().Result)!;
+    }
+
+    public async Task DeleteAsync(string url)
+    {
+        HttpRequestMessage request = new HttpRequestMessage
+        {
+            Content = null,
+            Method = HttpMethod.Delete,
+            RequestUri = new Uri($"{BaseUrl}{url}?key={_apiKey}&token={_apiToken}"),
+            VersionPolicy = HttpVersionPolicy.RequestVersionOrLower
+        };
+
+        HttpResponseMessage res = await _httpClient.SendAsync(request);
+
+        if (!res.IsSuccessStatusCode)
+        {
+            throw new Exception(res.Content.ReadAsStringAsync().Result);
+        }
+    }
+
+    public async Task<string> PutAsync(string url, HttpContent content)
+    {
+        HttpRequestMessage request = new HttpRequestMessage
+        {
+            Content = content,
+            Method = HttpMethod.Put,
+            RequestUri = new Uri($"{BaseUrl}{url}?key={_apiKey}&token={_apiToken}"),
+            VersionPolicy = HttpVersionPolicy.RequestVersionOrLower
+        };
+
+        HttpResponseMessage res = await _httpClient.SendAsync(request);
+
+        if (!res.IsSuccessStatusCode)
+        {
+            throw new Exception(res.Content.ReadAsStringAsync().Result);
+        }
+
+        return res.Content.ReadAsStringAsync().Result;
     }
 }
