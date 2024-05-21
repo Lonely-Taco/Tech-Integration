@@ -67,6 +67,12 @@ dotnet build
 dotnet run
 ```
 
+### Generate cards
+
+Call the `Trello/cards/create` endpoint to run fill the cards from the json.
+
+the json used is in the TechIntegration.Core project withing the CSV Tenders folder.
+
 ## Endpoints
 
 **GET /Trello/auth**
@@ -96,6 +102,10 @@ Fetches custom field values for a specific card by its ID.
 **GET /Trello/lists**
 
 Fetches all lists for the specified board.
+
+**GET /Trello/cards/create**
+
+Generate cards
 
 **GET /Trello/list/{id}**
 
