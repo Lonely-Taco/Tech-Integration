@@ -35,17 +35,17 @@ updates custom fields on these cards based on the tender data.
 4. **Trello Board configuration**
     - Create 3 Lists/Lanes
     - Add Custom fields to a card
-        * Id
-        * TenderId
-        * LotNumber
-        * Deadline
-        * ExpirationDate
-        * HasDocuments
-        * Location
-        * PublicationDate
-        * Status
-        * Currency
-        * Value
+        * Id (`Text`)
+        * TenderId (`Text`)
+        * LotNumber (`Text`)
+        * Deadline (`Date`)
+        * ExpirationDate(`Date`)
+        * HasDocuments (`Check`)
+        * Location (`Text`)
+        * PublicationDate (`Date`)
+        * Status (`Text`)
+        * Currency (`Text`)
+        * Value (`Text`)
     
 ### Step 3: Configure `appsettings.Development.json`
 
